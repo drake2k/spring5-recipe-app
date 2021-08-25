@@ -4,15 +4,18 @@ import guru.springframework.domain.*;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
@@ -43,7 +46,6 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
         Notes guacamoleNotes = new Notes();
         guacamoleNotes.setRecipeNotes("Be careful handling chilis! If using, it's best to wear food-safe gloves. If no gloves are available, wash your hands thoroughly after handling, and do not touch your eyes or the area near your eyes for several hours afterwards.");
-        guacamoleNotes.setRecipe(guacamole);
         guacamole.setNotes(guacamoleNotes);
 
         //guacamole.setDescription("The best guacamole keeps it simple: just ripe avocados, salt, a squeeze of lime, onions, chilis, cilantro, and some chopped tomato. Serve it as a dip at your next party or spoon it on top of tacos for an easy dinner upgrade.");
@@ -58,17 +60,16 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         guacamole.getCategories().add(mexican);
 
         // ingredients
-        Ingredient ripeAvocados = new Ingredient("ripe avocados", new BigDecimal(2), each, guacamole);
-        Ingredient salt = new Ingredient("salt", new BigDecimal(0.25), teaspoon, guacamole);
-        Ingredient limeJuice = new Ingredient("fresh lime or lemon juice", new BigDecimal(1), tablespoon, guacamole);
-        Ingredient redOnions = new Ingredient("minced red onions", new BigDecimal(3), tablespoon, guacamole);
-        Ingredient serrano = new Ingredient("serrano or jalapeno", new BigDecimal(1), each, guacamole);
-        Ingredient cilantro = new Ingredient("cilantro, finely chopped", new BigDecimal(2), tablespoon, guacamole);
-        Ingredient blackPepper = new Ingredient("freshly ground black pepper", new BigDecimal(1), pinch, guacamole);
-        Ingredient tomato = new Ingredient(" ripe tomato, chopped (optional)", new BigDecimal(0.5), each, guacamole);
-        Ingredient redRadish = new Ingredient("Red radish or jicama slices for garnish (optional)", new BigDecimal(1), each, guacamole);
-        Ingredient tortilla = new Ingredient("salt", null,each, guacamole);
-        guacamole.getIngredients().addAll(List.of(ripeAvocados, salt, limeJuice, redOnions, serrano, cilantro, blackPepper, tomato, redRadish, tortilla));
+        guacamole.AddIngredient(new Ingredient("ripe avocados", new BigDecimal(2), each));
+        guacamole.AddIngredient(new Ingredient("salt", new BigDecimal(0.25), teaspoon));
+        guacamole.AddIngredient(new Ingredient("fresh lime or lemon juice", new BigDecimal(1), tablespoon));
+        guacamole.AddIngredient(new Ingredient("minced red onions", new BigDecimal(3), tablespoon));
+        guacamole.AddIngredient(new Ingredient("serrano or jalapeno", new BigDecimal(1), each));
+        guacamole.AddIngredient(new Ingredient("cilantro, finely chopped", new BigDecimal(2), tablespoon));
+        guacamole.AddIngredient(new Ingredient("freshly ground black pepper", new BigDecimal(1), pinch));
+        guacamole.AddIngredient(new Ingredient(" ripe tomato, chopped (optional)", new BigDecimal(0.5), each));
+        guacamole.AddIngredient(new Ingredient("Red radish or jicama slices for garnish (optional)", new BigDecimal(1), each));
+        guacamole.AddIngredient(new Ingredient("salt", null,each));
 
         guacamole.setDirections("Cut the avocado:\n" +
                 "Cut the avocados in half. Remove the pit. Score the inside of the avocado with a blunt knife and scoop out the flesh with a spoon. (See How to Cut and Peel an Avocado.) Place in a bowl." +
@@ -123,30 +124,25 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
         tacosRecipe.setNotes(tacoNotes);
 
-        Ingredient chiliPowder = new Ingredient("Ancho Chili Powder", new BigDecimal(2), tablespoon,tacosRecipe);
-        Ingredient driedOregano = new Ingredient("Dried Oregano", new BigDecimal(1), teaspoon,tacosRecipe);
-        Ingredient driedCumin = new Ingredient("Dried Cumin", new BigDecimal(1), teaspoon,tacosRecipe);
-        Ingredient sugar = new Ingredient("Sugar", new BigDecimal(1), teaspoon,tacosRecipe);
-        Ingredient salt2 = new Ingredient("Salt", new BigDecimal(".5"), teaspoon,tacosRecipe);
-        Ingredient garlicClove = new Ingredient("Clove of Garlic, Choppedr", new BigDecimal(1), each,tacosRecipe);
-        Ingredient zestr = new Ingredient("finely grated orange zestr", new BigDecimal(1), tablespoon,tacosRecipe);
-        Ingredient orangeJuice = new Ingredient("fresh-squeezed orange juice", new BigDecimal(3), tablespoon,tacosRecipe);
-        Ingredient oliveOil = new Ingredient("Olive Oil", new BigDecimal(2), tablespoon,tacosRecipe);
-        Ingredient bonelessChickenThighs = new Ingredient("boneless chicken thighs", new BigDecimal(4), tablespoon,tacosRecipe);
-        Ingredient smallCornTortillas = new Ingredient("small corn tortillasr", new BigDecimal(8), each,tacosRecipe);
-        Ingredient packedBabyArugula = new Ingredient("packed baby arugula", new BigDecimal(3), cup,tacosRecipe);
-        Ingredient mediumRipeAvocado = new Ingredient("medium ripe avocados, slic", new BigDecimal(2), each,tacosRecipe);
-        Ingredient radishes = new Ingredient("radishes, thinly sliced", new BigDecimal(4), each,tacosRecipe);
-        Ingredient cherryTomatoes = new Ingredient("cherry tomatoes, halved", new BigDecimal(".5"), pint,tacosRecipe);
-        Ingredient redOnion = new Ingredient("red onion, thinly sliced", new BigDecimal(".25"), each,tacosRecipe);
-        Ingredient rCilantro = new Ingredient("Roughly chopped cilantro", new BigDecimal(4), each,tacosRecipe);
-        Ingredient sourCream = new Ingredient("cup sour cream thinned with 1/4 cup milk", new BigDecimal(4), cup,tacosRecipe);
-        Ingredient limeWedges = new Ingredient("lime, cut into wedges", new BigDecimal(4), each,tacosRecipe);
-
-        guacamole.getIngredients().addAll(List.of(chiliPowder, driedOregano, driedCumin, sugar, salt2,
-                garlicClove, zestr, orangeJuice, oliveOil,
-                bonelessChickenThighs, smallCornTortillas, packedBabyArugula, mediumRipeAvocado,
-                radishes, cherryTomatoes, redOnion, rCilantro, sourCream, limeWedges));
+        tacosRecipe.AddIngredient(new Ingredient("Ancho Chili Powder", new BigDecimal(2), tablespoon));
+        tacosRecipe.AddIngredient(new Ingredient("Dried Oregano", new BigDecimal(1), teaspoon));
+        tacosRecipe.AddIngredient(new Ingredient("Dried Cumin", new BigDecimal(1), teaspoon));
+        tacosRecipe.AddIngredient(new Ingredient("Sugar", new BigDecimal(1), teaspoon));
+        tacosRecipe.AddIngredient(new Ingredient("Salt", new BigDecimal(".5"), teaspoon));
+        tacosRecipe.AddIngredient(new Ingredient("Clove of Garlic, Choppedr", new BigDecimal(1), each));
+        tacosRecipe.AddIngredient(new Ingredient("finely grated orange zestr", new BigDecimal(1), tablespoon));
+        tacosRecipe.AddIngredient(new Ingredient("fresh-squeezed orange juice", new BigDecimal(3), tablespoon));
+        tacosRecipe.AddIngredient(new Ingredient("Olive Oil", new BigDecimal(2), tablespoon));
+        tacosRecipe.AddIngredient(new Ingredient("boneless chicken thighs", new BigDecimal(4), tablespoon));
+        tacosRecipe.AddIngredient(new Ingredient("small corn tortillasr", new BigDecimal(8), each));
+        tacosRecipe.AddIngredient(new Ingredient("packed baby arugula", new BigDecimal(3), cup));
+        tacosRecipe.AddIngredient(new Ingredient("medium ripe avocados, slic", new BigDecimal(2), each));
+        tacosRecipe.AddIngredient(new Ingredient("radishes, thinly sliced", new BigDecimal(4), each));
+        tacosRecipe.AddIngredient(new Ingredient("cherry tomatoes, halved", new BigDecimal(".5"), pint));
+        tacosRecipe.AddIngredient(new Ingredient("red onion, thinly sliced", new BigDecimal(".25"), each));
+        tacosRecipe.AddIngredient(new Ingredient("Roughly chopped cilantro", new BigDecimal(4), each));
+        tacosRecipe.AddIngredient(new Ingredient("cup sour cream thinned with 1/4 cup milk", new BigDecimal(4), cup));
+        tacosRecipe.AddIngredient(new Ingredient("lime, cut into wedges", new BigDecimal(4), each));
 
         tacosRecipe.getCategories().add(american);
         tacosRecipe.getCategories().add(mexican);
@@ -169,7 +165,9 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }*/
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        log.debug("RecipeBootstrap::onApplicationEvent");
         List<Recipe> recipes = getRecipes();
         recipeRepository.saveAll(recipes);
     }
