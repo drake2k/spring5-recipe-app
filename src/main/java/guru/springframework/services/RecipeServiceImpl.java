@@ -18,8 +18,8 @@ public class RecipeServiceImpl implements RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public Set<Recipe> GetListOfRecipe(){
-        log.debug("RecipeServiceImpl::GetListOfRecipe");
+    public Set<Recipe> getListOfRecipe(){
+        log.debug("RecipeServiceImpl::getListOfRecipe");
         Set<Recipe> recipes = new HashSet<>();
         recipeRepository.findAll().iterator().forEachRemaining(recipes::add);
         return recipes;
