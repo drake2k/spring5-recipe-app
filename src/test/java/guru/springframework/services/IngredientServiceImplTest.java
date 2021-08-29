@@ -16,7 +16,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -106,6 +109,26 @@ public class IngredientServiceImplTest {
         assertEquals(Long.valueOf(3L), savedCommand.getId());
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, times(1)).save(any(Recipe.class));
+
+    }
+
+    @Test
+    public void deleteIngredientByRecipeIdAndIngredientId() {
+        Recipe recipe = new Recipe();
+        Ingredient ing = new Ingredient();
+        ing.setId(2L);
+        recipe.addIngredient(ing);
+        ing.setRecipe(recipe);
+
+        when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe));
+
+        ingredientService.deleteIngredientByRecipeIdAndIngredientId(1L, 2L);
+
+        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).save(any(Recipe.class));
+        assertEquals(null, ing.getRecipe());
+        assertThat(recipe.getIngredients(), not(hasItem(ing)));
+        assertEquals(false, recipe.getIngredients().contains(ing));
 
     }
 }
