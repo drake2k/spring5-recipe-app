@@ -2,7 +2,7 @@ package guru.springframework.controllers;
 
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.exceptions.NotFoundException;
-import guru.springframework.exceptions.UrlParameterNumberFormatException;
+
 import guru.springframework.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,6 @@ public class RecipeController {
     @GetMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model){
 
-        Long longId;
-        try{
-            longId = new Long(id);
-        }catch (NumberFormatException e){
-            throw new UrlParameterNumberFormatException("Parameter was: '" + id + "', expected a number.");
-        }
         model.addAttribute("recipe", recipeService.findById(new Long(id)));
 
         return "recipe/show";
@@ -84,7 +78,7 @@ public class RecipeController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UrlParameterNumberFormatException.class)
+    @ExceptionHandler(NumberFormatException.class)
     public ModelAndView handleNumberFormat(Exception exception)
     {
         log.error("handling number format exception");
